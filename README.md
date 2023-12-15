@@ -7,7 +7,7 @@ Clustering with single linkage.
 ## Getting Started
 
 First, download the [dataset](https://personal.eur.nl/frasincar/datasets/TVs-all-merged.zip) and open the zip-file into
-`data/TVs-all-merged.json`.
+`data/TVs-all-merged.json`. Then, install the packages listed in `requirements.txt`.
 
 The `main.py` script is the main entry point of the program. Follow these instructions to run the script for various
 models:
