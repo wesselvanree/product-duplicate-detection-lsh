@@ -21,7 +21,7 @@ class StrEncoder(metaclass=ABCMeta):
 
     @abstractmethod
     def encode(self, value: str) -> Set[int]:
-        ...
+        pass
 
 
 class ShingleEncoder(StrEncoder):
@@ -40,7 +40,9 @@ class ShingleEncoder(StrEncoder):
         elif len(value) == k:
             return {self._get_or_create(value)}
 
-        return {self._get_or_create(value[i:(i + k)]) for i in range(len(value) - k + 1)}
+        return {
+            self._get_or_create(value[i : (i + k)]) for i in range(len(value) - k + 1)
+        }
 
     @staticmethod
     def shingle(value: str, k: int) -> Set[str]:
@@ -49,7 +51,7 @@ class ShingleEncoder(StrEncoder):
         elif len(value) == k:
             return {value}
 
-        return {value[i:(i + k)] for i in range(len(value) - k + 1)}
+        return {value[i : (i + k)] for i in range(len(value) - k + 1)}
 
 
 class ModelWordsEncoder(StrEncoder):
@@ -63,4 +65,6 @@ class ModelWordsEncoder(StrEncoder):
 
     @staticmethod
     def get_model_words(value: str) -> List[str]:
-        return re.findall('[a-zA-Z0-9]*(([0-9]+[ˆ0-9, ]+)|([ˆ0-9, ]+[0-9]+))[a-zA-Z0-9]*', value)
+        return re.findall(
+            "[a-zA-Z0-9]*(([0-9]+[ˆ0-9, ]+)|([ˆ0-9, ]+[0-9]+))[a-zA-Z0-9]*", value
+        )

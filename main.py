@@ -30,8 +30,8 @@ class Product:
 
 
 def diff_brand(a: Product, b: Product):
-    a_str = a.title + ' ' + ' '.join(a.featuresMap.values()).lower()
-    b_str = b.title + ' ' + ' '.join(b.featuresMap.values()).lower()
+    a_str = a.title + " " + " ".join(a.featuresMap.values()).lower()
+    b_str = b.title + " " + " ".join(b.featuresMap.values()).lower()
 
     for brand in BRANDS:
         a_has_brand = brand in a_str
@@ -99,13 +99,15 @@ def plot_dendrogram(model, **kwargs):
     dendrogram(linkage_matrix, **kwargs)
 
 
-def apply_clustering(products: List[Product],
-                     candidate_pairs: NDArray,
-                     k: int,
-                     mu=.650,
-                     gamma=.775,
-                     distance_threshold=.9,
-                     fast=True):
+def apply_clustering(
+    products: List[Product],
+    candidate_pairs: NDArray,
+    k: int,
+    mu=0.650,
+    gamma=0.775,
+    distance_threshold=0.9,
+    fast=True,
+):
     N = len(products)
     inf_distance = 1000
     distances = np.ones((N, N)) * inf_distance
@@ -152,12 +154,15 @@ def apply_clustering(products: List[Product],
 
         for q_key, q_value in product_i.featuresMap.items():
             for r_key, r_value in product_j.featuresMap.items():
-                key_similarity = jaccard(ShingleEncoder.shingle(q_key, k),
-                                         ShingleEncoder.shingle(r_key, k))
+                key_similarity = jaccard(
+                    ShingleEncoder.shingle(q_key, k), ShingleEncoder.shingle(r_key, k)
+                )
 
                 if key_similarity > gamma:
-                    value_similarity = jaccard(ShingleEncoder.shingle(q_value, k),
-                                               ShingleEncoder.shingle(r_value, k))
+                    value_similarity = jaccard(
+                        ShingleEncoder.shingle(q_value, k),
+                        ShingleEncoder.shingle(r_value, k),
+                    )
                     weight = key_similarity
                     sim += weight * value_similarity
                     m += 1
@@ -166,13 +171,17 @@ def apply_clustering(products: List[Product],
                     nonmatching_j.pop(r_key)
 
         avg_sim = sim / w if w > 0 else 0
-        mw_perc = jaccard(extract_model_words(nonmatching_i), extract_model_words(nonmatching_j))
-        title_sim = jaccard(ShingleEncoder.shingle(product_i.title.lower(), k),
-                            ShingleEncoder.shingle(product_j.title.lower(), k))
+        mw_perc = jaccard(
+            extract_model_words(nonmatching_i), extract_model_words(nonmatching_j)
+        )
+        title_sim = jaccard(
+            ShingleEncoder.shingle(product_i.title.lower(), k),
+            ShingleEncoder.shingle(product_j.title.lower(), k),
+        )
 
         min_features = min(len(product_i.featuresMap), len(product_j.featuresMap))
         h_sim: float
-        if title_sim < .5:
+        if title_sim < 0.5:
             theta1 = m / min_features
             theta2 = 1 - theta1
             h_sim = theta1 * avg_sim + theta2 * mw_perc
@@ -184,10 +193,12 @@ def apply_clustering(products: List[Product],
         set_distance(i, j, 1 - h_sim)
 
     # perform clustering
-    model = AgglomerativeClustering(distance_threshold=distance_threshold,
-                                    n_clusters=None,
-                                    linkage='single',
-                                    metric='precomputed')
+    model = AgglomerativeClustering(
+        distance_threshold=distance_threshold,
+        n_clusters=None,
+        linkage="single",
+        metric="precomputed",
+    )
     model.fit(distances)
 
     # sys.setrecursionlimit(10000)
@@ -207,10 +218,12 @@ def apply_clustering(products: List[Product],
     return model, num_comparisons_made
 
 
-def performance_metrics(prefix: str,
-                        predicted_duplicates: NDArray,
-                        actual_duplicates: NDArray,
-                        num_comparisons_made: int):
+def performance_metrics(
+    prefix: str,
+    predicted_duplicates: NDArray,
+    actual_duplicates: NDArray,
+    num_comparisons_made: int,
+):
     duplicates_found = np.sum(predicted_duplicates * actual_duplicates) / 2
     total_num_duplicates = np.sum(actual_duplicates) / 2
 
@@ -219,12 +232,12 @@ def performance_metrics(prefix: str,
     f1 = (2 * pair_quality * pair_completeness) / (pair_quality + pair_completeness)
 
     return {
-        f'{prefix}f1': f1,
-        f'{prefix}PQ': pair_quality,
-        f'{prefix}PC': pair_completeness,
-        f'{prefix}D_f': duplicates_found,
-        f'{prefix}N_c': num_comparisons_made,
-        f'{prefix}D_n': total_num_duplicates,
+        f"{prefix}f1": f1,
+        f"{prefix}PQ": pair_quality,
+        f"{prefix}PC": pair_completeness,
+        f"{prefix}D_f": duplicates_found,
+        f"{prefix}N_c": num_comparisons_made,
+        f"{prefix}D_n": total_num_duplicates,
     }
 
 
@@ -244,11 +257,15 @@ def load_data():
 
     for duplicates in jsondata.values():
         for product in duplicates:
-            products.append(Product(title=product['title'].lower(),
-                                    modelID=product['modelID'],
-                                    shop=product['shop'],
-                                    url=product['url'],
-                                    featuresMap=product['featuresMap']))
+            products.append(
+                Product(
+                    title=product["title"].lower(),
+                    modelID=product["modelID"],
+                    shop=product["shop"],
+                    url=product["url"],
+                    featuresMap=product["featuresMap"],
+                )
+            )
 
     N = len(products)
     duplicates_matrix = np.zeros((N, N)).astype(int)
@@ -258,7 +275,7 @@ def load_data():
             if i != j and p1.modelID == p2.modelID:
                 duplicates_matrix[i, j] = 1
 
-    print(f'\nN={N} (of which {len(jsondata)} unique)\n')
+    print(f"\nN={N} (of which {len(jsondata)} unique)\n")
 
     return products, duplicates_matrix
 
@@ -278,12 +295,20 @@ def main():
         current_indices = random.sample(index_range, k=N)
         current_products = [products[i] for i in current_indices]
         current_duplicates = np.array(
-            [[duplicates_matrix[i, j] for j in current_indices] for i in current_indices])
+            [
+                [duplicates_matrix[i, j] for j in current_indices]
+                for i in current_indices
+            ]
+        )
         current_num_duplicates = np.sum(current_duplicates) / 2
 
         mw_encoder, mw = preprocess(current_products)
 
-        for r in tqdm([r for r in range(2, n) if n % r == 0], desc="(r,b) combinations", leave=False):
+        for r in tqdm(
+            [r for r in range(2, n) if n % r == 0],
+            desc="(r,b) combinations",
+            leave=False,
+        ):
             b = round(n / r)
 
             # create signature matrix
@@ -301,47 +326,91 @@ def main():
                 lsh_predicted_duplicates[j, i] = 1
 
             # perform clustering
-            model, num_comparisons_made = apply_clustering(current_products, candidate_pairs, k=k)
+            model, num_comparisons_made = apply_clustering(
+                current_products, candidate_pairs, k=k
+            )
             predicted_duplicates = np.array(
-                [[int(model.labels_[i] == model.labels_[j]) for j in range(N)] for i in range(N)])
+                [
+                    [int(model.labels_[i] == model.labels_[j]) for j in range(N)]
+                    for i in range(N)
+                ]
+            )
 
-            experiment_results.append({
-                'bootstrap': bootstrap,
-                'n': n,
-                'b': b,
-                'r': r,
-                'num_duplicates': current_num_duplicates,
-                **performance_metrics('lsh__',
-                                      lsh_predicted_duplicates,
-                                      current_duplicates,
-                                      candidate_pairs.shape[0]),
-                **performance_metrics('clu__',
-                                      predicted_duplicates,
-                                      current_duplicates,
-                                      num_comparisons_made)
-            })
+            experiment_results.append(
+                {
+                    "bootstrap": bootstrap,
+                    "n": n,
+                    "b": b,
+                    "r": r,
+                    "num_duplicates": current_num_duplicates,
+                    **performance_metrics(
+                        "lsh__",
+                        lsh_predicted_duplicates,
+                        current_duplicates,
+                        candidate_pairs.shape[0],
+                    ),
+                    **performance_metrics(
+                        "clu__",
+                        predicted_duplicates,
+                        current_duplicates,
+                        num_comparisons_made,
+                    ),
+                }
+            )
 
     df_results = pd.DataFrame(experiment_results)
     print(df_results)
     df_results.to_csv("results_all.csv")
 
     def get_best_for_bootstrap(i: int, key: str):
-        filtered_df = df_results[df_results['bootstrap'] == i]
+        filtered_df = df_results[df_results["bootstrap"] == i]
         f1 = filtered_df[key]
         return filtered_df[f1 == f1.max()]
 
-    best_f1_star = pd.concat([get_best_for_bootstrap(i, 'lsh__f1') for i in range(replications)])
-    print('\n\nBest F1-star results per bootstrap:\n')
+    best_f1_star = pd.concat(
+        [get_best_for_bootstrap(i, "lsh__f1") for i in range(replications)]
+    )
+    print("\n\nBest F1-star results per bootstrap:\n")
     print(
-        best_f1_star[['bootstrap', 'n', 'b', 'r', 'lsh__f1', 'lsh__PQ', 'lsh__PC', 'lsh__D_f', 'lsh__N_c', 'lsh__D_n']])
+        best_f1_star[
+            [
+                "bootstrap",
+                "n",
+                "b",
+                "r",
+                "lsh__f1",
+                "lsh__PQ",
+                "lsh__PC",
+                "lsh__D_f",
+                "lsh__N_c",
+                "lsh__D_n",
+            ]
+        ]
+    )
     best_f1_star.to_csv("results_best_f1_star.csv")
 
-    best_f1 = pd.concat([get_best_for_bootstrap(i, 'clu__f1') for i in range(replications)])
-    print('\n\nBest F1 results per bootstrap:\n')
-    print(best_f1[['bootstrap', 'n', 'b', 'r', 'clu__f1', 'clu__PQ', 'clu__PC', 'clu__D_f',
-                   'clu__N_c', 'clu__D_n']])
+    best_f1 = pd.concat(
+        [get_best_for_bootstrap(i, "clu__f1") for i in range(replications)]
+    )
+    print("\n\nBest F1 results per bootstrap:\n")
+    print(
+        best_f1[
+            [
+                "bootstrap",
+                "n",
+                "b",
+                "r",
+                "clu__f1",
+                "clu__PQ",
+                "clu__PC",
+                "clu__D_f",
+                "clu__N_c",
+                "clu__D_n",
+            ]
+        ]
+    )
     best_f1.to_csv("results_best_f1.csv")
 
 
-if __name__ == '__main__':
+if __name__ == "__main__":
     main()
