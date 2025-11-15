@@ -1,0 +1,14 @@
+[project]
+name = "product-duplicate-detection-lsh"
+version = "0.1.0"
+description = "Scalable Product Duplicate Detection using LSH"
+readme = "README.md"
+requires-python = ">=3.12"
+dependencies = [
+    "matplotlib==3.8.2",
+    "numpy==1.26.2",
+    "pandas==2.1.4",
+    "scikit-learn==1.3.2",
+    "scipy==1.11.4",
+    "tqdm==4.66.1",
+]

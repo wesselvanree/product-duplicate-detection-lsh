@@ -6,8 +6,21 @@ Clustering with single linkage.
 
 ## Getting Started
 
-First, download the [dataset](https://personal.eur.nl/frasincar/datasets/TVs-all-merged.zip) and open the zip-file into
-`data/TVs-all-merged.json`. Then, install the packages listed in `requirements.txt`.
+Clone this repository to your local machine, and open a terminal in this directory. This project uses `uv` as a package manager, [install uv](https://docs.astral.sh/uv/getting-started/installation/) or create your own virtual environment with the dependencies listed in `pyproject.toml`.
+
+To create a virtual environment for this project using `uv`, run:
+
+```
+uv venv
+```
+
+Then, install dependencies listed in `pyproject.toml` using:
+
+```
+uv sync
+```
+
+Before running this script, download the [dataset](https://personal.eur.nl/frasincar/datasets/TVs-all-merged.zip) and open the zip-file into `data/TVs-all-merged.json`.
 
 The `main.py` script is the main entry point of the program. Follow these instructions to run the script for various
 models:
