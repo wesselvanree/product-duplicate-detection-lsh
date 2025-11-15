@@ -1,3 +1,4 @@
+import argparse
 import json
 import math
 import random
@@ -103,10 +104,10 @@ def apply_clustering(
     products: List[Product],
     candidate_pairs: NDArray,
     k: int,
+    fast: bool,
     mu=0.650,
     gamma=0.775,
     distance_threshold=0.9,
-    fast=True,
 ):
     N = len(products)
     inf_distance = 1000
@@ -280,7 +281,7 @@ def load_data():
     return products, duplicates_matrix
 
 
-def main():
+def main(fast: bool):
     products, duplicates_matrix = load_data()
     N = len(products)
 
@@ -327,7 +328,7 @@ def main():
 
             # perform clustering
             model, num_comparisons_made = apply_clustering(
-                current_products, candidate_pairs, k=k
+                current_products, candidate_pairs, k=k, fast=fast
             )
             predicted_duplicates = np.array(
                 [
@@ -413,4 +414,17 @@ def main():
 
 
 if __name__ == "__main__":
-    main()
+    parser = argparse.ArgumentParser()
+
+    parser.add_argument(
+        "--fast",
+        action=argparse.BooleanOptionalAction,
+        type=bool,
+        default=True,
+        help="When this is true, MSMP-Lite will be used. Otherwise, MSMP-J is used. (default: True)",
+    )
+
+    args = parser.parse_args()
+    fast: bool = parser.fast
+
+    main(fast)
