@@ -22,11 +22,11 @@ uv sync
 
 Before running this script, download the [dataset](https://personal.eur.nl/frasincar/datasets/TVs-all-merged.zip) and open the zip-file into `data/TVs-all-merged.json`.
 
-The `main.py` script is the main entry point of the program. Follow these instructions to run the script for various
+The `src/pdd/main.py` script is the main entry point of the program, run `python src/pdd/main.py --help` for a list of options. Follow these instructions to run the script for various
 models:
 
-- MSMP-J: set the `fast` argument of the `apply_clustering` function to `False`
-- MSMP-Lite: set the `fast` argument of the `apply_clustering` function to `True`
+- MSMP-J: `python src/pdd/main.py --no-fast`
+- MSMP-Lite: `python src/pdd/main.py --fast`
 
 In order to use the same hash-function as the orginal MSMP method, pass `''` for the `separator` argument to the `lsh`
 function.
