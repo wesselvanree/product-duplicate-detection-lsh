@@ -1,9 +1,9 @@
 [project]
-name = "product-duplicate-detection-lsh"
+name = "pdd"
 version = "0.1.0"
 description = "Scalable Product Duplicate Detection using LSH"
 readme = "README.md"
-requires-python = ">=3.12"
+requires-python = ">=3.12,<3.13"
 dependencies = [
     "matplotlib==3.8.2",
     "numpy==1.26.2",
@@ -12,3 +12,10 @@ dependencies = [
     "scipy==1.11.4",
     "tqdm==4.66.1",
 ]
+
+[project.scripts]
+example = "pdd:main"
+
+[build-system]
+requires = ["uv_build>=0.9.14,<0.10.0"]
+build-backend = "uv_build"
