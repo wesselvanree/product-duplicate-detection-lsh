@@ -1,6 +1,6 @@
 import re
 from abc import ABCMeta, abstractmethod
-from typing import Optional, Set, Dict, List
+from typing import Dict, List, Optional, Set
 
 
 class StrEncoder(metaclass=ABCMeta):

@@ -7,15 +7,16 @@ from typing import Dict, List, Set
 
 import numpy as np
 import pandas as pd
+from constants import BRANDS
+from encoder import ModelWordsEncoder, ShingleEncoder
+from lsh import lsh
+from minhashing import minhash
 from numpy.typing import NDArray
 from scipy.cluster.hierarchy import dendrogram
 from sklearn.cluster import AgglomerativeClustering
 from tqdm import tqdm
 
-from constants import BRANDS
-from encoder import ModelWordsEncoder, ShingleEncoder
-from lsh import lsh
-from minhashing import minhash
+from pdd.utils.paths import Paths
 
 
 @dataclass
@@ -251,7 +252,7 @@ def preprocess(products: List[Product]):
 
 def load_data():
     jsondata: Dict[str, List[Dict]]
-    with open("data/TVs-all-merged.json") as f:
+    with open(Paths.data / "TVs-all-merged.json") as f:
         jsondata = json.load(f)
 
     products: List[Product] = []
