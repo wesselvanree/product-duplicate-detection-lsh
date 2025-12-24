@@ -8,13 +8,7 @@ Clustering with single linkage.
 
 Clone this repository to your local machine, and open a terminal in this directory. This project uses `uv` as a package manager, [install uv](https://docs.astral.sh/uv/getting-started/installation/) or create your own virtual environment with the dependencies listed in `pyproject.toml`.
 
-To create a virtual environment for this project using `uv`, run:
-
-```
-uv venv
-```
-
-Then, install dependencies listed in `pyproject.toml` using:
+To install the dependencies in a virtual environment, run the following command:
 
 ```
 uv sync
