@@ -5,12 +5,12 @@ description = "Scalable Product Duplicate Detection using LSH"
 readme = "README.md"
 requires-python = ">=3.12,<3.13"
 dependencies = [
-    "matplotlib==3.10.9",
-    "numpy==1.26.4",
-    "pandas==2.3.3",
-    "scikit-learn==1.9.0",
-    "scipy==1.17.1",
-    "tqdm==4.68.2",
+    "matplotlib>=3.10.9,<3.11",
+    "numpy>=1.26.4,<2",
+    "pandas>=2.3.3,<3",
+    "scikit-learn>=1.9.0,<2",
+    "scipy>=1.17.1,<2",
+    "tqdm>=4.68.2,<5",
 ]
 
 [project.scripts]
